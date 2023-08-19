@@ -1,6 +1,23 @@
-import * as C from './App.style'
+import { useEffect, useState } from 'react';
+
+import { Item } from './types/Item';
+
+import { items } from './data/items';
+
+import { filterListByMonth, getCurrentMonth } from './helpers/dateFilter';
+
+import * as C from './App.style';
+
+import { TableArea } from './components/TableArea';
 
 export const App = () => {
+  const [list, setList] = useState(items);
+  const [filteredList, setFilteredList] = useState<Item[]>([]);
+  const [currentMonth, setCurrentMonth] = useState(getCurrentMonth());
+
+  useEffect(() => {
+    setFilteredList(filterListByMonth(list, currentMonth));
+  }, [list, currentMonth]);
 
   return (
     <C.Container>
@@ -8,8 +25,12 @@ export const App = () => {
         <C.HeaderText>Sistema Financeiro</C.HeaderText>
       </C.Header>
       <C.Body>
-        aaa
+        <TableArea />
+
+        {filteredList.map(item => (
+          <div>{item.title}</div>
+        ))}
       </C.Body>
     </C.Container>
-  )
-}
+  );
+};
